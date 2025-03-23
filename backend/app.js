@@ -15,9 +15,9 @@ mongoose
 
 // CORS Configuration
 const corsOptions = {
-  origin: ["https://mern-expenses-tracker-zeta.vercel.app"], // Allow frontend domain
-  // methods: ["GET", "POST", "PUT", "DELETE"], // Allow specific HTTP methods
-  // credentials: true, // Allow cookies and credentials
+  origin: "https://mern-expenses-tracker-zeta.vercel.app", // Allow your frontend domain
+  methods: ["GET", "POST", "PUT", "DELETE"], // Allow specific HTTP methods
+  credentials: true, // Allow cookies and credentials
 };
 
 app.use(cors(corsOptions));
