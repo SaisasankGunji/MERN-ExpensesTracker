@@ -15,9 +15,12 @@ mongoose
 
 //! Cors config
 const corsOptions = {
-  origin: ["https://mern-expenses-tracker-three.vercel.app"],
+  origin: [
+    "http://localhost:5173", // for local development
+    "https://mern-expenses-tracker-three.vercel.app" // deployed frontend
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
