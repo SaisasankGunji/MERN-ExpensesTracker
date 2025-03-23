@@ -9,20 +9,14 @@ const app = express();
 
 //Connect to mongodb
 mongoose
-  mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://Saisasank:Saisasank@123@cluster0.y5nye.mongodb.net/mern-expenses?retryWrites=true&w=majority&appName=Cluster0");
+  .connect("mongodb://localhost:27017/mern-expenses")
   .then(() => console.log("DB Connected"))
   .catch((e) => console.log(e));
 
 //! Cors config
 const corsOptions = {
-  origin: [
-    "http://localhost:5173", // for local development
-    "https://mern-expenses-tracker-three.vercel.app" // deployed frontend
-  ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
+  origin: ["http://localhost:5173"],
 };
-
 app.use(cors(corsOptions));
 
 //!Middlewares
