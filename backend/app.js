@@ -26,6 +26,13 @@ app.use(express.json()); //?Pass incoming json data
 app.use("/", userRouter);
 app.use("/", categoryRouter);
 app.use("/", transactionRouter);
+
+app.get("/", (req, res) => {
+  res.send({
+    activeStatus: true,
+    error: false,
+  });
+});
 //! Error
 app.use(errorHandler);
 
