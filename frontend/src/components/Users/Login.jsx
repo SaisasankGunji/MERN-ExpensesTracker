@@ -5,26 +5,27 @@ import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock } from "react-icons/fa";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Import eye icons
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { loginAPI } from "../../services/users/userService";
 import AlertMessage from "../Alert/AlertMessage";
 import { loginAction } from "../../redux/slice/authSlice";
 
 const validationSchema = Yup.object({
-  email: Yup.string().email("Invalid").required("Email is required"),
-  password: Yup.string()
-    .min(5, "Password must be at least 5 characters long")
-    .required("Password is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().required("Password is required"),
 });
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   const { mutateAsync, isPending, isError, error, isSuccess } = useMutation({
     mutationFn: loginAPI,
     mutationKey: ["login"],
+    onError: (error) => {
+      console.error("Login failed:", error);
+    },
   });
 
   const formik = useFormik({
@@ -44,31 +45,27 @@ const LoginForm = () => {
   });
 
   useEffect(() => {
-    setTimeout(() => {
-      if (isSuccess) {
+    if (isSuccess) {
+      setTimeout(() => {
         navigate("/dashboard");
-      }
-    }, 1500);
-  }, [isPending, isError, error, isSuccess]);
+      }, 1500);
+    }
+  }, [isSuccess, navigate]);
 
   return (
     <form
       onSubmit={formik.handleSubmit}
       className="max-w-md mx-auto my-10 bg-white p-6 rounded-xl shadow-lg space-y-6 border border-gray-200"
     >
-      <h2 className="text-3xl font-semibold text-center text-gray-800">
-        Login
-      </h2>
-      {isPending && (
-        <AlertMessage type="loading" message="Logging you in...." />
-      )}
+      <h2 className="text-3xl font-semibold text-center text-gray-800">Login</h2>
+      {isPending && <AlertMessage type="loading" message="Logging you in...." />}
       {isError && (
-        <AlertMessage type="error" message={error.response.data.message} />
+        <AlertMessage
+          type="error"
+          message={error?.response?.data?.message || "Login failed"}
+        />
       )}
       {isSuccess && <AlertMessage type="success" message="Login success" />}
-      <p className="text-sm text-center text-gray-500">
-        Login to access your account
-      </p>
 
       {/* Email Field */}
       <div className="relative">
@@ -90,7 +87,7 @@ const LoginForm = () => {
         <FaLock className="absolute top-3 left-3 text-gray-400" />
         <input
           id="password"
-          type={showPassword ? "text" : "password"} // Toggle input type
+          type={showPassword ? "text" : "password"}
           {...formik.getFieldProps("password")}
           placeholder="Password"
           className="pl-10 pr-10 py-2 w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
@@ -100,8 +97,7 @@ const LoginForm = () => {
           onClick={() => setShowPassword(!showPassword)}
           className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
         >
-          {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}{" "}
-          {/* Toggle eye icon */}
+          {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
         </button>
         {formik.touched.password && formik.errors.password && (
           <span className="text-xs text-red-500">{formik.errors.password}</span>
