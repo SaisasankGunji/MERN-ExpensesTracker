@@ -9,7 +9,7 @@ const app = express();
 
 //Connect to mongodb
 mongoose
-  .connect("mongodb://localhost:27017/mern-expenses")
+  .connect("mongodb+srv://Saisasank:Saisasank%4012@cluster0.y5nye.mongodb.net/mern-expenses")
   .then(() => console.log("DB Connected"))
   .catch((e) => console.log(e));
 
