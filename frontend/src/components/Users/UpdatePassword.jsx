@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { AiOutlineLock } from "react-icons/ai";
+import {
+  AiOutlineLock,
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+} from "react-icons/ai"; // Import eye icons
 import { useMutation } from "@tanstack/react-query";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -11,30 +15,27 @@ import AlertMessage from "../Alert/AlertMessage";
 const validationSchema = Yup.object({
   password: Yup.string()
     .min(5, "Password must be at least 5 characters long")
-    .required("Email is required"),
+    .required("Password is required"),
 });
 
 const UpdatePassword = () => {
-  // //Dispatch
   const dispatch = useDispatch();
-  // // Mutation
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+
   const { mutateAsync, isPending, isError, error, isSuccess } = useMutation({
     mutationFn: changePasswordAPI,
     mutationKey: ["change-password"],
   });
+
   const formik = useFormik({
     initialValues: {
       password: "",
     },
-    // Validations
     validationSchema,
-    //Submit
     onSubmit: (values) => {
       mutateAsync(values.password)
         .then((data) => {
-          // Logout
           dispatch(logoutAction());
-          //remove the user from storage
           localStorage.removeItem("userInfo");
         })
         .catch((e) => console.log(e));
@@ -66,12 +67,20 @@ const UpdatePassword = () => {
             <AiOutlineLock className="text-gray-400 mr-2" />
             <input
               id="new-password"
-              type="password"
+              type={showPassword ? "text" : "password"} // Toggle input type
               name="newPassword"
               {...formik.getFieldProps("password")}
               className="outline-none flex-1"
               placeholder="Enter new password"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}{" "}
+              {/* Toggle eye icon */}
+            </button>
           </div>
           {formik.touched.password && formik.errors.password && (
             <span className="text-xs text-red-500">
