@@ -9,15 +9,13 @@ const app = express();
 
 // Connect to MongoDB
 mongoose
-  .connect("mongodb+srv://Saisasank:Saisasank%4012@cluster0.y5nye.mongodb.net/mern-expenses")
+  .connect("mongodb://localhost:27017/mern-expenses")
   .then(() => console.log("DB Connected"))
   .catch((e) => console.log(e));
 
 // CORS Configuration
 const corsOptions = {
-  origin: "https://mern-expenses-tracker-zeta.vercel.app", // Allow your frontend domain
-  methods: ["GET", "POST", "PUT", "DELETE"], // Allow specific HTTP methods
-  credentials: true, // Allow cookies and credentials
+  origin: ["http://localhost:5173"],
 };
 
 app.use(cors(corsOptions));
