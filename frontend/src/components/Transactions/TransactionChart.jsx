@@ -38,8 +38,8 @@ const TransactionChart = () => {
       {
         label: "Transactions",
         data: [totals?.income, totals?.expense],
-        backgroundColor: ["#36A2EB", "#FF6384"],
-        borderColor: ["#36A2EB", "#FF6384"],
+        backgroundColor: ["#36A2EB", "#E53935"],
+        borderColor: ["#36A2EB", "#E53935"],
         borderWith: 1,
         hoverOffset: 4,
       },

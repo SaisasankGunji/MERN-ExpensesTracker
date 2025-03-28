@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import {
   deleteTransactionAPI,
 } from "../../services/transactions/transactionService";
 import { listCategoriesAPI } from "../../services/category/categoryService";
+import AlertMessage from "../Alert/AlertMessage";
 
 const TransactionList = () => {
   const [filters, setFilters] = useState({
@@ -15,8 +16,20 @@ const TransactionList = () => {
     type: "",
     category: "",
   });
-
+  const [dateError, setDateError] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (
+      filters.startDate &&
+      filters.endDate &&
+      filters.startDate > filters.endDate
+    ) {
+      setDateError(true);
+    } else {
+      setDateError(false);
+    }
+  }, [filters.startDate, filters.endDate]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -49,45 +62,101 @@ const TransactionList = () => {
 
   return (
     <div className="my-4 p-4 shadow-lg rounded-lg bg-white">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <input
-          type="date"
-          name="startDate"
-          value={filters.startDate}
-          onChange={handleFilterChange}
-          className="p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-        />
-        <input
-          value={filters.endDate}
-          onChange={handleFilterChange}
-          type="date"
-          name="endDate"
-          className="p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-        />
-        <select
-          name="type"
-          value={filters.type}
-          onChange={handleFilterChange}
-          className="w-full p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-        >
-          <option value="">All Types</option>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </select>
-        <select
-          value={filters.category}
-          onChange={handleFilterChange}
-          name="category"
-          className="w-full p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-        >
-          <option value="All">All Categories</option>
-          <option value="Uncategorized">Uncategorized</option>
-          {categoriesData?.map((category) => (
-            <option key={category?._id} value={category?.name}>
-              {category?.name}
-            </option>
-          ))}
-        </select>
+      {dateError && (
+        <div className="mb-4">
+          <AlertMessage
+            type="error"
+            message="Start date cannot be greater than end date"
+          />
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Start Date */}
+        <div className="space-y-1">
+          <label
+            htmlFor="startDate"
+            className="block text-sm font-semibold text-gray-900"
+          >
+            Starting Date
+          </label>
+          <input
+            id="startDate"
+            type="date"
+            name="startDate"
+            value={filters.startDate}
+            onChange={handleFilterChange}
+            className={`w-full p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
+              dateError ? "border-red-500" : ""
+            }`}
+          />
+        </div>
+
+        {/* End Date */}
+        <div className="space-y-1">
+          <label
+            htmlFor="endDate"
+            className="block text-sm font-semibold text-gray-900"
+          >
+            Ending Date
+          </label>
+          <input
+            id="endDate"
+            value={filters.endDate}
+            onChange={handleFilterChange}
+            type="date"
+            name="endDate"
+            className={`w-full p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
+              dateError ? "border-red-500" : ""
+            }`}
+          />
+        </div>
+
+        {/* Type */}
+        <div className="space-y-1">
+          <label
+            htmlFor="type"
+            className="block text-sm font-semibold text-gray-900"
+          >
+            Type of Expense
+          </label>
+          <select
+            id="type"
+            name="type"
+            value={filters.type}
+            onChange={handleFilterChange}
+            className="w-full p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            <option value="">All Types</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+        </div>
+
+        {/* Category */}
+        <div className="space-y-1">
+          <label
+            htmlFor="category"
+            className="block text-sm font-semibold text-gray-900"
+          >
+            Category
+          </label>
+          <select
+            id="category"
+            value={filters.category}
+            onChange={handleFilterChange}
+            name="category"
+            className="w-full p-2 rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            <option value="All">All Categories</option>
+            <option value="Uncategorized">Uncategorized</option>
+            {categoriesData?.map((category) => (
+              <option key={category?._id} value={category?.name}>
+                {category?.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="mt-6 flex justify-start">

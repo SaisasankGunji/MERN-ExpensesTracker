@@ -4,7 +4,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink, Link } from "react-router-dom"; // Use NavLink instead of Link
 import { useDispatch } from "react-redux";
 import { IoLogOutOutline } from "react-icons/io5";
-import { SiAuthy } from "react-icons/si";
+import { SiMoneygram } from "react-icons/si";
 import { logoutAction } from "../../redux/slice/authSlice";
 
 function classNames(...classes) {
@@ -42,7 +42,7 @@ export default function PrivateNavbar() {
                 </div>
                 <div className="flex flex-shrink-0 items-center">
                   {/* Logo */}
-                  <SiAuthy className="h-8 w-auto text-green-500" />
+                  <SiMoneygram className="h-8 w-auto text-green-500" />
                 </div>
                 <div className="hidden md:ml-6 md:flex md:space-x-8">
                   <NavLink
